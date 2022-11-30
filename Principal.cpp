@@ -54,7 +54,6 @@ int main()
 	
 
 	bool imprimir;
-
 	// Bucle se ejecuta hasta que deje de recibir texto por consola
 	while (cin >> comando)
 	{
@@ -80,12 +79,13 @@ int main()
 		}
 		else if (comando == "AñadirLugar")
 		{
-			lugares->insertar(paramSeparados[0], paramSeparados[1]);
-			std::cout <<"Añadido: " << paramSeparados[0] << ". Total: " << lugares->getTotalLugares() << " lugares" << std::endl;	
+			lugares->insertar(new Lugar(paramSeparados[0], paramSeparados[1]));
+			std::cout <<"Añadido: " << paramSeparados[0] << ". Total: " << lugares->getNumeroLugares() 
+					  << " lugares" << std::endl;	
 		}
 		else if (comando == "AL")
 		{
-			lugares->insertar(paramSeparados[0],"");
+			lugares->insertar(new Lugar(paramSeparados[0]));
 		}
 		else if (comando == "ConsultarLugar")
 		{
@@ -99,8 +99,8 @@ int main()
 			}else{
 				//No encontrado: nombre
 				cout << "No encontrado: " << paramSeparados[0] << endl;
-			}
-			
+				delete lugarActual;
+			}			
 		}
 		// Aquí anteriormente se encontraba aumento varible cont
 	}

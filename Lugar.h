@@ -16,6 +16,7 @@ private:
   Lugar * siguiente;
 public:
   Lugar(){this->nombre = ""; this->informacion = "";};
+  Lugar(string &nombre){this->nombre = nombre; this->informacion = "";};
   Lugar(string &nombre, string &informacion) :
    nombre(nombre), informacion(informacion), siguiente(NULL){    
    }

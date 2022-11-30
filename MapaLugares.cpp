@@ -33,22 +33,30 @@ void MapaLugares::reestructuracion()
   unsigned long antiguaCapacidad = this->capacidad;  
   Lugar **nuevoMapa = this->mapa;
 
-  this->capacidad = this->capacidad ^ 2;
-  this->mapa = new Lugar *[this->capacidad];
+  
 
-  for (int i = 0; i < antiguaCapacidad; i++)
+  this->capacidad *=  2;
+  this->mapa = new Lugar *[this->capacidad];
+  this->numeroLugares = 0;
+  
+  for (unsigned long i = 0; i < antiguaCapacidad; i++)
   {
-    if (this->mapa[i] != NULL)
+    std::cout << i << endl;
+    if (nuevoMapa[i] != NULL)
     {
       // Se coge el primer elemento de la cubeta
-      Lugar *entrada = mapa[i];
+      Lugar *entrada = nuevoMapa[i];
+      cout << "Principio Cubeta:" << endl;
       while (entrada != NULL)
       {
         // Se inserta en el nuevo mapa
+        cout << "Nombre elemento:" << entrada->getNombre()<< endl; 
         this->insertar(entrada);
+        cout << "Insertado:" << entrada->getNombre()<< endl; 
         // Se pasa al siguiente lugar en la cubeta
         entrada = entrada->getSiguiente();
       }
+      cout << "*****************************"<< endl;
     }
   }
 }
@@ -80,7 +88,7 @@ MapaLugares::~MapaLugares()
   delete[] mapa;
 }
 
-bool MapaLugares::insertar(Lugar * lugar)
+void MapaLugares::insertar(Lugar * lugar)
 {
   std::string nombre = lugar->getNombre();
   unsigned long valorHash = funcionHash(nombre);
@@ -95,6 +103,7 @@ bool MapaLugares::insertar(Lugar * lugar)
 
   if (entrada == NULL)
   {
+    // Añadir lugar nuevo
     if (previo == NULL)
     {
       // Insertar como primera cubeta
@@ -104,6 +113,12 @@ bool MapaLugares::insertar(Lugar * lugar)
     {
       previo->setSiguiente(lugar);
     }
+    
+    //Si se acerca al fin de la capacidad reestructuracion
+    this->numeroLugares++;
+    if(this->numeroLugares == (this->capacidad-1)){
+      this->reestructuracion();
+    }
   }
   else
   {
@@ -112,7 +127,7 @@ bool MapaLugares::insertar(Lugar * lugar)
   }
 }
 
-Lugar MapaLugares::consultar(string nombre)
+Lugar * MapaLugares::consultar(string nombre)
 {
   unsigned long hashValue = funcionHash(nombre);
   Lugar *entrada = mapa[hashValue];
@@ -122,7 +137,7 @@ Lugar MapaLugares::consultar(string nombre)
     entrada = entrada->getSiguiente();
   }
 
-  return (entrada != NULL) ? *(entrada) : Lugar();
+  return (entrada != NULL) ? entrada : nullptr;
 }
 
 void MapaLugares::eliminar(string nombre)
@@ -151,11 +166,13 @@ void MapaLugares::eliminar(string nombre)
       previo->setSiguiente(entrada->getSiguiente());
     }
     delete entrada;
+    this->numeroLugares--;
   }
 }
 
 void MapaLugares::vaciar(void)
 {
+  //Vaciar mapa 
   for (int i = 0; i < this->capacidad; ++i)
   {
     Lugar *entrada = mapa[i];
@@ -167,4 +184,10 @@ void MapaLugares::vaciar(void)
     }
     mapa[i] = NULL;
   }
+  delete [] mapa;
+  // Resetear atributos
+  this->mapa = new Lugar *[1000]();
+  this->capacidad = 1000;
+  this->numeroLugares = 0;
+
 }
