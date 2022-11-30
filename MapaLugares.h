@@ -9,8 +9,8 @@ using namespace std;
 class MapaLugares{  
   private:
     Lugar **mapa;
-    int numeroLugares;
-    int capacidad;
+    unsigned long numeroLugares;
+    unsigned long capacidad;
 
     unsigned long funcionHash(string clave);
     void reestructuracion();
@@ -18,11 +18,12 @@ class MapaLugares{
 
     MapaLugares();
     ~MapaLugares();
-    int getNumeroLugares();
-    int getCapacidad();
+    int getNumeroLugares(){ return numeroLugares; }
+    int getCapacidad(){ return capacidad; }
    
-    bool insertar(string nombre, string informacion);
-    Lugar  consultar(string nombre);
+    bool insertar(Lugar * lugar);
+    Lugar consultar(string nombre);
+    void eliminar(string nombre);
     void vaciar(void);
 };
 #endif
