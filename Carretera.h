@@ -21,9 +21,8 @@ private:
     std::string informacion;
 
 public:
-    Carretera(Lugar *&destino,
-              unsigned int coste, std::string informacion) : destino(destino), coste(coste),
-                                                             informacion(informacion) {}
+    Carretera(Lugar * destino,unsigned int coste, std::string informacion)
+     : destino(destino), coste(coste), informacion(informacion) {}
 
     //Descomentar si la idea sale mal
     /*
