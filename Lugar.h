@@ -36,6 +36,9 @@ public:
   
   string toString();
   int compareTo(Lugar otro);
+
+  string nombreCarretera() { return this->getNombre()+"-"
+                            +this->carretera->getDestino()->getNombre(); }
 };
 #endif
 

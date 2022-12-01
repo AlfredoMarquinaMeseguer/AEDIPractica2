@@ -1,6 +1,7 @@
 // Archivo fuente de implementación de la clase Persona
 #include "MapaLugares.h"
 #include "Lugar.h"
+#include "Carretera.h"
 // Incluimos la definición (declaración) de la clase
 #include <iostream> // Incluimos iostream para usar std::cout
 #include <string>
@@ -21,7 +22,7 @@ unsigned long MapaLugares::funcionHash(string clave)
   int c;
 
   while (c = *borrarDespues++)
-    hash = c + (hash << 6) + (hash << 16) - hash;  
+    hash = c + (hash << 6) + (hash << 16) - hash;
 
   return (hash % this->capacidad);
 }
@@ -61,7 +62,7 @@ void MapaLugares::reestructuracion()
 MapaLugares::MapaLugares()
 {
   this->capacidad = 1000;
-  this->mapa = new list<Lugar>[this->capacidad];  
+  this->mapa = new list<Lugar>[this->capacidad];
   this->numeroLugares = 0;
 }
 
@@ -69,10 +70,10 @@ MapaLugares::~MapaLugares()
 {
   // destruir cubeta a cubeta
   for (int i = 0; i < this->capacidad; ++i)
-	{
-		this->mapa[i].clear();
-	}
-	delete[] mapa;
+  {
+    this->mapa[i].clear();
+  }
+  delete[] mapa;
 }
 
 void MapaLugares::insertar(Lugar *lugar)
@@ -89,8 +90,10 @@ void MapaLugares::insertar(Lugar *lugar)
   // No ha llegado al final de la lista, es porque se ha encontrado el objeto
   if (posicionCubeta != mapa[hashValue].end())
   {
-    (*posicionCubeta).setInformacion(lugar->getInformacion());    
-  }else{
+    (*posicionCubeta).setInformacion(lugar->getInformacion());
+  }
+  else
+  {
     mapa[hashValue].push_back(*lugar);
     this->numeroLugares++;
   }
@@ -108,7 +111,7 @@ Lugar *MapaLugares::consultar(string nombre)
   }
 
   // No ha llegado al final de la lista, es porque se ha encontrado el objeto
-  return (posicionCubeta != finCubeta) ? &(*posicionCubeta) : nullptr;  
+  return (posicionCubeta != finCubeta) ? &(*posicionCubeta) : nullptr;
 }
 
 void MapaLugares::eliminar(string nombre)
@@ -133,9 +136,57 @@ void MapaLugares::vaciar(void)
 {
   // Vaciar mapa cubeta a cubeta
   for (int i = 0; i < this->capacidad; ++i)
-	{
-		this->mapa[i].clear();
-	}
+  {
+    this->mapa[i].clear();
+  }
   // Resetear numeroLugares
   this->numeroLugares = 0;
+}
+
+bool MapaLugares::annadirCarrretera(string origen, Carretera *carretera)
+{
+  bool devolver = false;
+  unsigned long hashValue = funcionHash(origen);
+  std::list<Lugar>::iterator posicionCubeta = mapa[hashValue].begin();
+
+  while (posicionCubeta != mapa[hashValue].end() && (*posicionCubeta).getNombre() != origen)
+  {
+    posicionCubeta++;
+  }
+
+  // No ha llegado al final de la lista, es porque se ha encontrado el objeto
+  if (posicionCubeta != mapa[hashValue].end())
+  {
+    (*posicionCubeta).setCarretera(carretera);
+    devolver = true;
+  }
+
+  return devolver;
+}
+
+Carretera *MapaLugares::consultarCarretera(string origen, string destino)
+{
+  unsigned long hashValue = funcionHash(origen);
+  std::list<Lugar>::iterator finCubeta = mapa[hashValue].end();
+  std::list<Lugar>::iterator posicionCubeta = mapa[hashValue].begin();
+  Carretera * consulta;
+
+  while (posicionCubeta != finCubeta && (*posicionCubeta).getNombre() != origen)
+  {
+    posicionCubeta++;
+  }
+
+  /*
+  Si no se llega al final de la cubeta es porque ha encontrado el objeto.
+  Si, además, la clave de destino coincide con la de la carretera del lugar
+  es porque ha encontrado el objeto carretera.
+  */
+  if (posicionCubeta != finCubeta && 
+  (*posicionCubeta).getCarretera()->getDestino()->getNombre() == destino){
+    consulta = (*posicionCubeta).getCarretera();
+  } else {
+    consulta = nullptr;
+  }
+
+  return consulta;
 }

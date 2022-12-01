@@ -9,8 +9,7 @@
 string Lugar::toString()
 {
   return "Nombre: " + this->nombre + ". Informacion: " + this->informacion + 
-         ". Caretera: " + this->carretera->getOrigen()->getNombre()+"-"+ 
-         this->carretera->getDestino()->getNombre();
+         ". Caretera: " + this->nombreCarretera();
 }
 
 int Lugar::compareTo(Lugar otro)

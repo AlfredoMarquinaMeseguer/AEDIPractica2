@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include "Lugar.h"
+#include "Carretera.h"
 
 using namespace std;
 class MapaLugares{  
@@ -25,5 +26,11 @@ class MapaLugares{
     Lugar * consultar(string nombre);
     void eliminar(string nombre);
     void vaciar(void);
+
+    bool annadirCarrretera(string origen, Carretera * carretera);
+    Carretera * consultarCarretera(string origen, string destino);
+
+    //Listar adyacente como lista de carreteras al implementarlo en el siguiente ejercicio 302
+    //list<Carretera> listarAdyacentes();
 };
 #endif
