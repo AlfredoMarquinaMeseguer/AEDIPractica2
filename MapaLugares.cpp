@@ -4,6 +4,7 @@
 // Incluimos la definición (declaración) de la clase
 #include <iostream> // Incluimos iostream para usar std::cout
 #include <string>
+#include <list>
 
 using namespace std; // utilizaremos el espacio de nombres std para cout y string
 
@@ -12,17 +13,15 @@ using namespace std; // utilizaremos el espacio de nombres std para cout y strin
 // Algotimo de dispersion sdbm
 unsigned long MapaLugares::funcionHash(string clave)
 {
-  unsigned char *str = new unsigned char[clave.length() + 1];
+  unsigned char str[clave.length() + 1];
   unsigned char *borrarDespues = str;
   std::copy(clave.data(), clave.data() + clave.length() + 1, str);
 
   unsigned long hash = 0;
   int c;
 
-  while (c = *str++)
-    hash = c + (hash << 6) + (hash << 16) - hash;
-
-  delete borrarDespues;
+  while (c = *borrarDespues++)
+    hash = c + (hash << 6) + (hash << 16) - hash;  
 
   return (hash % this->capacidad);
 }
@@ -30,164 +29,113 @@ unsigned long MapaLugares::funcionHash(string clave)
 void MapaLugares::reestructuracion()
 {
   unsigned long hash;
-  unsigned long antiguaCapacidad = this->capacidad;  
-  Lugar **nuevoMapa = this->mapa;
+  unsigned long antiguaCapacidad = this->capacidad;
+  list<Lugar> *antiguoMapa = this->mapa;
 
-  
+  list<Lugar>::iterator finCubeta;
+  list<Lugar>::iterator recorreCubetas;
+  list<Lugar> cubeta;
 
-  this->capacidad *=  2;
-  this->mapa = new Lugar *[this->capacidad];
+  this->capacidad *= 2;
+  this->mapa = new list<Lugar>[this->capacidad];
   this->numeroLugares = 0;
-  
+
   for (unsigned long i = 0; i < antiguaCapacidad; i++)
   {
-    std::cout << i << endl;
-    if (nuevoMapa[i] != NULL)
+    recorreCubetas = antiguoMapa[i].begin();
+    finCubeta = antiguoMapa[i].end();
+    // Se coge el primer elemento de la cubeta
+    while (recorreCubetas != finCubeta)
     {
-      // Se coge el primer elemento de la cubeta
-      Lugar *entrada = nuevoMapa[i];
-      cout << "Principio Cubeta:" << endl;
-      while (entrada != NULL)
-      {
-        // Se inserta en el nuevo mapa
-        cout << "Nombre elemento:" << entrada->getNombre()<< endl; 
-        this->insertar(entrada);
-        cout << "Insertado:" << entrada->getNombre()<< endl; 
-        // Se pasa al siguiente lugar en la cubeta
-        entrada = entrada->getSiguiente();
-      }
-      cout << "*****************************"<< endl;
+      // Se inserta en el nuevo mapa
+      this->insertar(&(*recorreCubetas));
+      // Se pasa al siguiente lugar en la cubeta
+      recorreCubetas++;
     }
+    antiguoMapa[i].clear();
   }
+  delete[] antiguoMapa;
 }
 
 // Public methods
 MapaLugares::MapaLugares()
 {
-  this->mapa = new Lugar *[1000]();
   this->capacidad = 1000;
+  this->mapa = new list<Lugar>[this->capacidad];  
   this->numeroLugares = 0;
 }
 
 MapaLugares::~MapaLugares()
 {
-  // destruir objetos contenidos en el mapa
+  // destruir cubeta a cubeta
   for (int i = 0; i < this->capacidad; ++i)
-  {
-    Lugar *entrada = mapa[i];
-    while (entrada != NULL)
-    {
-      Lugar *previo = entrada;
-      entrada = entrada->getSiguiente();
-      delete previo;
-    }
-    mapa[i] = NULL;
-    //mensaje
-  }
-  // destruir mapa 
-  delete[] mapa;
+	{
+		this->mapa[i].clear();
+	}
+	delete[] mapa;
 }
 
-void MapaLugares::insertar(Lugar * lugar)
+void MapaLugares::insertar(Lugar *lugar)
 {
   std::string nombre = lugar->getNombre();
-  unsigned long valorHash = funcionHash(nombre);
-  Lugar *previo = NULL;
-  Lugar *entrada = mapa[valorHash];
+  unsigned long hashValue = funcionHash(nombre);
+  std::list<Lugar>::iterator posicionCubeta = mapa[hashValue].begin();
 
-  while (entrada != NULL && entrada->getNombre() != nombre)
+  while (posicionCubeta != mapa[hashValue].end() && (*posicionCubeta).getNombre() != nombre)
   {
-    previo = entrada;
-    entrada = entrada->getSiguiente();
+    posicionCubeta++;
   }
 
-  if (entrada == NULL)
+  // No ha llegado al final de la lista, es porque se ha encontrado el objeto
+  if (posicionCubeta != mapa[hashValue].end())
   {
-    // Añadir lugar nuevo
-    if (previo == NULL)
-    {
-      // Insertar como primera cubeta
-      mapa[valorHash] = lugar;
-    }
-    else
-    {
-      previo->setSiguiente(lugar);
-    }
-    
-    //Si se acerca al fin de la capacidad reestructuracion
+    (*posicionCubeta).setInformacion(lugar->getInformacion());    
+  }else{
+    mapa[hashValue].push_back(*lugar);
     this->numeroLugares++;
-    if(this->numeroLugares == (this->capacidad-1)){
-      this->reestructuracion();
-    }
-  }
-  else
-  {
-    // Si existe uno con la misma clave se edita info
-    entrada->setInformacion(lugar->getInformacion());
   }
 }
 
-Lugar * MapaLugares::consultar(string nombre)
+Lugar *MapaLugares::consultar(string nombre)
 {
   unsigned long hashValue = funcionHash(nombre);
-  Lugar *entrada = mapa[hashValue];
+  std::list<Lugar>::iterator finCubeta = mapa[hashValue].end();
+  std::list<Lugar>::iterator posicionCubeta = mapa[hashValue].begin();
 
-  while (entrada != NULL && entrada->getNombre() != nombre)
+  while (posicionCubeta != finCubeta && (*posicionCubeta).getNombre() != nombre)
   {
-    entrada = entrada->getSiguiente();
+    posicionCubeta++;
   }
 
-  return (entrada != NULL) ? entrada : nullptr;
+  // No ha llegado al final de la lista, es porque se ha encontrado el objeto
+  return (posicionCubeta != finCubeta) ? &(*posicionCubeta) : nullptr;  
 }
 
 void MapaLugares::eliminar(string nombre)
 {
   unsigned long hashValue = funcionHash(nombre);
-  Lugar *previo = NULL;
-  Lugar *entrada = mapa[hashValue];
+  std::list<Lugar>::iterator posicionCubeta = mapa[hashValue].begin();
 
-  while (entrada != NULL && entrada->getNombre() != nombre)
+  while (posicionCubeta != mapa[hashValue].end() && (*posicionCubeta).getNombre() != nombre)
   {
-    previo = entrada;
-    entrada = entrada->getSiguiente();
+    posicionCubeta++;
   }
 
-  // Si entrada no es nulo, es porque se ha encontrado el objeto
-  if (entrada != NULL)
+  // No ha llegado al final de la lista, es porque se ha encontrado el objeto
+  if (posicionCubeta != mapa[hashValue].end())
   {
-    if (previo == NULL)
-    {
-      // eliminar primer nodo cubeta
-      mapa[hashValue] = entrada->getSiguiente();
-    }
-    else
-    {
-      // eliminar otro nodo cubeta
-      previo->setSiguiente(entrada->getSiguiente());
-    }
-    delete entrada;
+    mapa[hashValue].erase(posicionCubeta);
     this->numeroLugares--;
   }
 }
 
 void MapaLugares::vaciar(void)
 {
-  //Vaciar mapa 
+  // Vaciar mapa cubeta a cubeta
   for (int i = 0; i < this->capacidad; ++i)
-  {
-    Lugar *entrada = mapa[i];
-    while (entrada != NULL)
-    {
-      Lugar *previo = entrada;
-      entrada = entrada->getSiguiente();
-      delete previo;
-    }
-    mapa[i] = NULL;
-  }
-  delete [] mapa;
-  // Resetear atributos
-  this->mapa = new Lugar *[1000]();
-  this->capacidad = 1000;
+	{
+		this->mapa[i].clear();
+	}
+  // Resetear numeroLugares
   this->numeroLugares = 0;
-
 }

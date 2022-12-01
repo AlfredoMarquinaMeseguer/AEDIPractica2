@@ -8,7 +8,7 @@
 using namespace std;
 class MapaLugares{  
   private:
-    Lugar **mapa;
+    list<Lugar> *mapa;
     unsigned long numeroLugares;
     unsigned long capacidad;
 
