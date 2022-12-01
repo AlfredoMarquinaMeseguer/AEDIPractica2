@@ -6,6 +6,7 @@
 #include <string>
 #include "Carretera.h"
 using namespace std;
+
 class Lugar
 {
 private:
@@ -23,22 +24,21 @@ public:
   } 
   
   // nombre
-  string getNombre(){ return nombre; }
+  std::string getNombre(){ return nombre; }
   void setNombre(string nombre){ this->nombre = nombre; }
 
   // informacion
-  string getInformacion() { return informacion; }
+  std::string getInformacion() { return informacion; }
   void setInformacion(string informacion){ this->informacion = informacion;}
 
   // carretera
   Carretera * getCarretera() { return carretera; }
   void setCarretera(Carretera * carretera){ this->carretera = carretera;}
   
-  string toString();
+  std::string toString();
   int compareTo(Lugar otro);
 
-  string nombreCarretera() { return this->getNombre()+"-"
-                            +this->carretera->getDestino()->getNombre(); }
+  std::string nombreCarretera();
 };
 #endif
 

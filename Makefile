@@ -8,9 +8,9 @@ MapaLugares.o: MapaLugares.cpp MapaLugares.h Lugar.h Carretera.h
 Lugar.o: Lugar.cpp Lugar.h Carretera.h
 	g++ -c Lugar.cpp
 
-Carretera.o: Carretera.cpp Carretera.h
+Carretera.o: Carretera.cpp Carretera.h Lugar.h
 	g++ -c Carretera.cpp
 
-Principal.o: Principal.cpp Lugar.h MapaLugares.h 
+Principal.o: Principal.cpp Lugar.h MapaLugares.h Carretera.h
 	g++ -c Principal.cpp
 

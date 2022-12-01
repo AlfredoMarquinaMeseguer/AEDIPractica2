@@ -143,7 +143,7 @@ void MapaLugares::vaciar(void)
   this->numeroLugares = 0;
 }
 
-bool MapaLugares::annadirCarrretera(string origen, Carretera *carretera)
+bool MapaLugares::annadirCarretera(string origen, Carretera *carretera)
 {
   bool devolver = false;
   unsigned long hashValue = funcionHash(origen);
@@ -155,7 +155,7 @@ bool MapaLugares::annadirCarrretera(string origen, Carretera *carretera)
   }
 
   // No ha llegado al final de la lista, es porque se ha encontrado el objeto
-  if (posicionCubeta != mapa[hashValue].end())
+  if (posicionCubeta != mapa[hashValue].end() && this->consultar(carretera->getDestino()) != nullptr)
   {
     (*posicionCubeta).setCarretera(carretera);
     devolver = true;
@@ -169,7 +169,40 @@ Carretera *MapaLugares::consultarCarretera(string origen, string destino)
   unsigned long hashValue = funcionHash(origen);
   std::list<Lugar>::iterator finCubeta = mapa[hashValue].end();
   std::list<Lugar>::iterator posicionCubeta = mapa[hashValue].begin();
-  Carretera * consulta;
+  Carretera *consulta;
+
+  while (posicionCubeta != finCubeta && (*posicionCubeta).getNombre() != origen)
+  {
+    posicionCubeta++;
+  }
+
+  
+  /*
+   1. Si no se llega al final de la cubeta es porque ha encontrado el objeto.
+   2. El puntero carretera no es nulo
+   3. El destino de la carretera y el pasado por parametro son iguales
+  */
+ 
+  if (posicionCubeta != mapa[hashValue].end() &&
+      (*posicionCubeta).getCarretera()  != nullptr &&
+      (*posicionCubeta).getCarretera()->getDestino() == destino)
+  {
+    consulta = (*posicionCubeta).getCarretera();
+  }
+  else
+  {
+    consulta = nullptr;
+  }
+
+  return consulta;
+}
+
+Carretera *MapaLugares::listarAdyacentes(string origen)
+{
+  unsigned long hashValue = funcionHash(origen);
+  std::list<Lugar>::iterator finCubeta = mapa[hashValue].end();
+  std::list<Lugar>::iterator posicionCubeta = mapa[hashValue].begin();
+  Carretera *consulta;
 
   while (posicionCubeta != finCubeta && (*posicionCubeta).getNombre() != origen)
   {
@@ -178,13 +211,17 @@ Carretera *MapaLugares::consultarCarretera(string origen, string destino)
 
   /*
   Si no se llega al final de la cubeta es porque ha encontrado el objeto.
-  Si, además, la clave de destino coincide con la de la carretera del lugar
-  es porque ha encontrado el objeto carretera.
   */
-  if (posicionCubeta != finCubeta && 
-  (*posicionCubeta).getCarretera()->getDestino()->getNombre() == destino){
+  if (posicionCubeta != finCubeta)
+  {
     consulta = (*posicionCubeta).getCarretera();
-  } else {
+    if (consulta == nullptr)
+    {
+      consulta = new Carretera("", 0, "");
+    }
+  }
+  else
+  {
     consulta = nullptr;
   }
 

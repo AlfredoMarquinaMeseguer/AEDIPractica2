@@ -2,7 +2,8 @@
 #define CARRETERA_H
 
 #include <string>
-#include "Lugar.h"
+
+class Lugar;
 
 class Carretera
 {
@@ -12,16 +13,16 @@ private:
     // Lugar *origen;
 
     // Lugar al que llegan
-    Lugar *destino;
+    std::string destino;
 
     // Coste de recorrer carretera
-    unsigned int coste;
+    unsigned int coste;    
 
     // Informacion
     std::string informacion;
 
 public:
-    Carretera(Lugar * destino,unsigned int coste, std::string informacion)
+    Carretera(std::string destino,unsigned int coste, std::string informacion)
      : destino(destino), coste(coste), informacion(informacion) {}
 
     //Descomentar si la idea sale mal
@@ -42,8 +43,8 @@ public:
 
 
     // destino
-    Lugar *getDestino() { return this->destino; }
-    void setDestino(Lugar *destino) { this->destino = destino; }
+    std::string getDestino() { return this->destino; }
+    void setDestino(std::string destino) { this->destino = destino; }
 
     // coste
     unsigned int getCoste() { return this->coste; }
@@ -52,5 +53,7 @@ public:
     // informacion
     std::string getInformacion() { return informacion; }
     void setInformacion(std::string informacion) { this->informacion = informacion; }
+
+    std::string toString();
 };
 #endif

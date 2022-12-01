@@ -57,6 +57,7 @@ int main()
 	Carretera *consultada;
 
 	bool imprimir;
+	bool carreteraAnnadida;
 	// Bucle se ejecuta hasta que deje de recibir texto por consola
 	while (cin >> comando)
 	{
@@ -109,17 +110,20 @@ int main()
 		}
 		else if (comando == "AñadirCarretera")
 		{
-			lugares->annadirCarrretera(paramSeparados[0], new Carretera(lugares->consultar(paramSeparados[1]),
-																		(unsigned int)stoi(paramSeparados[2]),
-																		paramSeparados[3]));
 
-			std::cout << "Añadido: " << paramSeparados[0] << "-" << paramSeparados[1] << ". Total: "
-					  << "1"
-					  << " carreteras" << std::endl;
+			carreteraAnnadida = lugares->annadirCarretera(paramSeparados[0], new Carretera(paramSeparados[1],
+																							(unsigned int)stoi(paramSeparados[2]),
+																							paramSeparados[3]));
+			if (carreteraAnnadida)
+			{
+				std::cout << "Añadido: " << paramSeparados[0] << "-" << paramSeparados[1] << ". Total: "
+						  << "1"
+						  << " carreteras" << std::endl;
+			}
 		}
 		else if (comando == "AC")
 		{
-			lugares->annadirCarrretera(paramSeparados[0], new Carretera(lugares->consultar(paramSeparados[1]),
+			lugares->annadirCarretera(paramSeparados[0], new Carretera(paramSeparados[1],
 																		(unsigned int)stoi(paramSeparados[2]),
 																		""));
 		}
@@ -140,12 +144,12 @@ int main()
 		}
 		else if (comando == "ListarAdyacentes")
 		{
-			Carretera *consultada = lugares->consultarCarretera(paramSeparados[0], paramSeparados[1]);
+			Carretera *consultada = lugares->listarAdyacentes(paramSeparados[0]);
 
 			if (consultada != nullptr)
 			{
 				std::cout << "Encontrado: " << paramSeparados[0] << std::endl
-						  << "Adyacentes: " << paramSeparados[1] << std::endl;
+						  << "Adyacentes: " << consultada->getDestino() << std::endl;
 			}
 			else
 			{
