@@ -4,6 +4,7 @@
 #define LUGAR_H
 
 #include <string>
+#include "Carretera.h"
 using namespace std;
 class Lugar
 {
@@ -12,28 +13,26 @@ private:
   string nombre;
   // Valor
   string informacion;
-  // siguiente nodo
-  Lugar * siguiente;
+  // Carretera que sale del lugar
+  Carretera * carretera;
 public:
   Lugar(){this->nombre = ""; this->informacion = "";};
   Lugar(string &nombre){this->nombre = nombre; this->informacion = "";};
   Lugar(string &nombre, string &informacion) :
-   nombre(nombre), informacion(informacion), siguiente(NULL){    
-   }
-
-  
+   nombre(nombre), informacion(informacion){    
+  } 
   
   // nombre
   string getNombre(){ return nombre; }
   void setNombre(string nombre){ this->nombre = nombre; }
 
-// informacion
+  // informacion
   string getInformacion() { return informacion; }
   void setInformacion(string informacion){ this->informacion = informacion;}
 
-// siguiente
-  Lugar * getSiguiente(){ return siguiente; }
-  void setSiguiente(Lugar * siguiente) { Lugar::siguiente = siguiente;}
+  // carretera
+  Carretera * getCarretera() { return carretera; }
+  void setCarretera(Carretera * carretera){ this->carretera = carretera;}
   
   string toString();
   int compareTo(Lugar otro);
