@@ -21,10 +21,16 @@ private:
     // Informacion
     std::string informacion;
 
+    //Nodos hijo
+    Carretera *left_child;
+    Carretera *rigth_child;
+
 public:
     Carretera(std::string destino,unsigned int coste, std::string informacion)
-     : destino(destino), coste(coste), informacion(informacion) {}
+     : destino(destino), coste(coste), informacion(informacion), 
+     left_child(nullptr), rigth_child(nullptr) {}
 
+    ~Carretera();
     //Descomentar si la idea sale mal
     /*
         Carretera( Lugar * &origen, Lugar * &destino,
@@ -55,5 +61,13 @@ public:
     void setInformacion(std::string informacion) { this->informacion = informacion; }
 
     std::string toString();
+    
+    Carretera *getLeftChild() { return left_child; }
+    void setLeftChild(Carretera *left_child) { this->left_child = left_child; }
+
+    Carretera *getRigthChild() { return rigth_child; }
+    void setRigthChild(Carretera *rigth_child) { this->rigth_child = rigth_child; }
+
+    static void destruirRecursivamente(Carretera *Carretera);
 };
 #endif

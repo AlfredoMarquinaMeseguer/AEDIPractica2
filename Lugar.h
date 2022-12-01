@@ -14,8 +14,9 @@ private:
   string nombre;
   // Valor
   string informacion;
-  // Carretera que sale del lugar
+  // Carreteras que sale del lugar
   Carretera * carretera;
+  // 
 public:
   Lugar(){this->nombre = ""; this->informacion = "";};
   Lugar(string &nombre){this->nombre = nombre; this->informacion = "";};
