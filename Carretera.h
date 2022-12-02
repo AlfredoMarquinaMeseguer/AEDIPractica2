@@ -16,37 +16,21 @@ private:
     std::string destino;
 
     // Coste de recorrer carretera
-    unsigned int coste;    
+    unsigned int coste;
 
     // Informacion
     std::string informacion;
 
-    //Nodos hijo
-    Carretera *left_child;
-    Carretera *rigth_child;
+    // Nodos hijo
+    Carretera *hijo_izquierdo;
+    Carretera *hijo_derecho;
 
 public:
-    Carretera(std::string destino,unsigned int coste, std::string informacion)
-     : destino(destino), coste(coste), informacion(informacion), 
-     left_child(nullptr), rigth_child(nullptr) {}
+    Carretera(std::string destino, unsigned int coste, std::string informacion)
+        : destino(destino), coste(coste), informacion(informacion),
+          hijo_izquierdo(nullptr), hijo_derecho(nullptr) {}
 
     ~Carretera();
-    //Descomentar si la idea sale mal
-    /*
-        Carretera( Lugar * &origen, Lugar * &destino,
-                   unsigned int coste, std::string informacion) :
-        origen(origen), destino(destino), coste(coste),
-        informacion(informacion) { }
-
-        Carretera( Lugar * &origen, Lugar * &destino,
-                   unsigned int coste) :
-        origen(origen), destino(destino), coste(coste),
-        informacion("") { }
-
-        // origen
-        Lugar *getOrigen() { return this->origen; }
-        void setOrigen(Lugar *origen) { this->origen = origen; }*/
-
 
     // destino
     std::string getDestino() { return this->destino; }
@@ -60,14 +44,16 @@ public:
     std::string getInformacion() { return informacion; }
     void setInformacion(std::string informacion) { this->informacion = informacion; }
 
+    // hijo_izquierdo
+    Carretera *getHijoIzquierdo() { return hijo_izquierdo; }
+    void setHijoIzquierdo(Carretera *hijo_izquierdo) { this->hijo_izquierdo = hijo_izquierdo; }
+
+    // hijo_derecho
+    Carretera *getHijoDerecho() { return hijo_derecho; }
+    void setHijoDerecho(Carretera *hijo_derecho) { this->hijo_derecho = hijo_derecho; }
+
+    /*
+      Escribe en un array la informacion sobre esta carretera*/
     std::string toString();
-    
-    Carretera *getLeftChild() { return left_child; }
-    void setLeftChild(Carretera *left_child) { this->left_child = left_child; }
-
-    Carretera *getRigthChild() { return rigth_child; }
-    void setRigthChild(Carretera *rigth_child) { this->rigth_child = rigth_child; }
-
-    void static destruirRecursivamente(Carretera *Carretera);
 };
 #endif

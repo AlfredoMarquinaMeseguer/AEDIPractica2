@@ -33,6 +33,7 @@ vector<string> separarParametros(string linea, char sep = ',')
 	return resultado;
 }
 
+//Metodo utilizado en ejercicios anteriores
 void escribirParametros(vector<string> params)
 {
 	int contador = 1;
@@ -40,28 +41,25 @@ void escribirParametros(vector<string> params)
 		cout << "Parámetro " << contador++ << ": [" << parametro << "]" << endl;
 }
 
-string inicializar()
-{
-	lugares->vaciar();
-	return "Mapa inicializado";
-}
-
 int main()
 {
-	// int cont = 1; // Contador actualmente obsoleto
-	/*comando -> albergará los nombres de los comandos llamados
-	  parametros -> alberga todos los parámetros antes de ser separados
-	  totalLugares -> total de lugares añadido en el mapa de lugares*/
+	/*
+		comando -> albergará los nombres de los comandos llamados
+		parametros -> alberga todos los parámetros antes de ser separados*/
 	string comando, parametros;
 	// paramSeparados -> alberga los parámetros recibidos de la funcionSeparadora
 	vector<string> paramSeparados;
 	// Carretera consultada en el comando ConsultarCarretera
 	Carretera *consultada;
-
-	std::string imprimir;
+	/*
+		Booleano utilizado en el comando AñadirCarretera, indica si se añadido o actulizado 
+		una carretera.*/
 	bool carreteraAnnadida;
-	// Bucle se ejecuta hasta que deje de recibir texto por consola
+	std::string imprimir;
 
+	std::list<Carretera *>::iterator itrAdyacentes;
+
+	// Bucle se ejecuta hasta que deje de recibir texto por consola
 	while (cin >> comando)
 	{
 
@@ -79,45 +77,76 @@ int main()
 		}
 
 		// Identificacion y tratamiento de comando
-		imprimir = false;
 		if (comando == "Inicializar")
 		{
-			std::cout << inicializar() << std::endl;
+			// Se vacia el mapa de Lugares con el método vaciar()
+			lugares->vaciar();
+			// Se imprime mensaje
+			std::cout << "Mapa inicializado" << std::endl;
 		}
 		else if (comando == "AñadirLugar")
 		{
+			/*
+				Se inserta el lugar en el mapa de lugares:
+					paramSeparados[0] -> nombre del lugar
+					paramSeparados[1] -> informacion del lugar
+			*/
 			lugares->insertar(new Lugar(paramSeparados[0], paramSeparados[1]));
+			//Imprimir mensaje;
 			std::cout << "Añadido: " << paramSeparados[0] << ". Total: " << lugares->getNumeroLugares()
 					  << " lugares" << std::endl;
 		}
 		else if (comando == "AL")
 		{
+			/*
+				Similar al anterior, pero sin informacion del lugar ni mensaje.
+				Se inserta el lugar en el mapa de lugares:
+					paramSeparados[0] -> nombre del lugar
+			*/
 			lugares->insertar(new Lugar(paramSeparados[0]));
 		}
 		else if (comando == "ConsultarLugar")
 		{
+			/*				
+				Se consulta el lugar en el mapa de lugares:
+					paramSeparados[0] -> nombre del lugar, clave
+
+				Esta funcion devuelve el puntero al lugar o nullptr si
+				no se encuentra.
+			*/
 			lugarActual = lugares->consultar(paramSeparados[0]);
-			if (lugarActual != nullptr)
+
+			if (lugarActual != nullptr)//Si se ha encontrado el lugar
 			{
-				/*Encontrado: nombre
-				  Información: informacion*/
+				
+				// Se imprime mensaje:					
 				cout << "Encontrado: " << lugarActual->getNombre() << endl
 					 << "Información: " << lugarActual->getInformacion() << endl;
 			}
-			else
+			else // Si no se encuentra
 			{
-				// No encontrado: nombre
+				// Se imprime mensaje:	
 				cout << "No encontrado: " << paramSeparados[0] << endl;
 				delete lugarActual;
 			}
 		}
 		else if (comando == "AñadirCarretera")
 		{
+			/*				
+				Se añade carreter al árbol del lugar si se encuentra en el mapa:
+					paramSeparados[0] -> nombre del lugar (clave lugar)
+					paramSeparados[1] -> nombre del destino (clave carretera)
+					paramSeparados[2] -> coste de la carretera
+						Se convierte de string a unsigned int 
+					paramSeparados[3] -> informacion de la carretera
 
+				Esta funcion devuelve un booleano segun si ha podido añadir la 
+				carretera.
+			*/
 			carreteraAnnadida = lugares->annadirCarretera(paramSeparados[0], paramSeparados[1],
 														  (unsigned int)stoi(paramSeparados[2]),
 														  paramSeparados[3]);
-			if (carreteraAnnadida)
+			if (carreteraAnnadida) //Si se ha añadido o actualizado imprime mensaje
 			{
 				std::cout << "Añadido: " << paramSeparados[0] << "-" << paramSeparados[1] << ". Total: "
 						  << lugares->getNumeroCarreteras() << " carreteras" << std::endl;
@@ -125,53 +154,92 @@ int main()
 		}
 		else if (comando == "AC")
 		{
+			/*				
+				Se añade carreter al árbol del lugar si se encuentra en el mapa:
+					paramSeparados[0] -> nombre del lugar (clave lugar)
+					paramSeparados[1] -> nombre del destino (clave carretera)
+					paramSeparados[2] -> coste de la carretera
+						Se convierte de string a unsigned int 
+				
+				AC no tiene paramSeparados[3] por lo que tenemos que pasarle la
+				informacion vacia.
+			*/
 			lugares->annadirCarretera(paramSeparados[0], paramSeparados[1],
 									  (unsigned int)stoi(paramSeparados[2]),
 									  "");
 		}
 		else if (comando == "ConsultarCarretera")
 		{
-			Carretera *consultada = lugares->consultarCarretera(paramSeparados[0], paramSeparados[1]);
+			/*				
+				Se consulta si existe una carretera en el árbol de un lugar:
+					paramSeparados[0] -> nombre del lugar (clave lugar)
+					paramSeparados[1] -> nombre del destino (clave carretera)					
+				
+				Esta funcion devuelve un puntero a Carretera, si no se encuentra
+				devuelve un puntero nullptr.
+			*/
+			consultada = lugares->consultarCarretera(paramSeparados[0], paramSeparados[1]);
 
-			if (consultada != nullptr)
+			if (consultada != nullptr) //Si se ha encontrado
 			{
+				//Imprime mensaje, nombre carretera = origen-destino
 				std::cout << "Encontrado: " << paramSeparados[0] << "-" << paramSeparados[1] << std::endl
 						  << "Coste: " << consultada->getCoste() << std::endl
 						  << "Información: " << consultada->getInformacion() << std::endl;
 			}
-			else
+			else //Si no se ha encontrado
 			{
 				std::cout << "No encontrado: " << paramSeparados[0] << "-" << paramSeparados[1] << std::endl;
 			}
 		}
 		else if (comando == "ListarAdyacentes")
 		{
+			/*				
+				Se listan todos las carreteras del árbol del lugar:
+					paramSeparados[0] -> nombre del lugar (clave lugar)
+				
+				Esta funcion devuelve una lista de punteros.
+				Si la lista está vacia, el lugar no existe.
+				Si la lista tiene un solo elemento y es nullptr, es porque no
+				tiene carreteras.
+			*/
 			std::list<Carretera *> consultada = lugares->listarAdyacentes(paramSeparados[0]);
 
-			if (!consultada.empty())
+			if (!consultada.empty())// Si el lugar existe
 			{
-				imprimir = "";
-				if (consultada.front() != nullptr)
-				{
-					std::list<Carretera *>::iterator itrNormal = consultada.begin();
-					while (itrNormal != consultada.end())
+				imprimir = "";// Aquí parasemos a string la lista para imprimir por pantalla
+
+				if (consultada.front() != nullptr)//Si el lugar tiene alguna carretera
+				{	
+					/* 
+						Iteramos por la lista para obtener los valores de destino y pasarlos
+						a string.
+					*/
+					itrAdyacentes = consultada.begin();
+					while (itrAdyacentes != consultada.end())
 					{
-						imprimir += (*itrNormal)->getDestino() + ", ";
-						itrNormal++;
+						// Además de los destinos se añaden separadores ", " al string
+						imprimir += (*itrAdyacentes)->getDestino() + ", ";
+						itrAdyacentes++;
 					}
+					/* 
+						Se eliminan ", " del final del string, añadidos por el 
+						último ciclo del bucle.
+					*/
 					imprimir.pop_back();
 					imprimir.pop_back();
 				}
 
+				//Imprime mensaje
 				std::cout << "Encontrado: " << paramSeparados[0] << std::endl
 						  << "Adyacentes: " << imprimir << std::endl;
 			}
-			else
+			else //Si el lugar no existe
 			{
+				//Imprime mensaje
 				std::cout << "No encontrado: " << paramSeparados[0] << std::endl;
 			}
 		}
-		// Aquí anteriormente se encontraba aumento varible cont
 	}
 
 	return 0;

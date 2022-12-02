@@ -1,5 +1,3 @@
-// Definición de la clase persona -> archivo "Persona.h"
-// siempre es buena idea usar macros del preprocesador para evitar compilar varias veces el mismo archivo
 #ifndef LUGAR_H
 #define LUGAR_H
 
@@ -15,10 +13,12 @@ private:
   string nombre;
   // Valor
   string informacion;
-  // Carreteras que sale del lugar
+  // Arbol de carreteras que salen del lugar
   Carretera *carretera;
 
 public:
+  //************************Constructores y destructor************************
+
   Lugar()
   {
     this->nombre = "";
@@ -36,6 +36,8 @@ public:
   }
   ~Lugar() { delete carretera; };
 
+  //************************Setters y getters************************
+
   // nombre
   std::string getNombre() { return nombre; }
   void setNombre(string nombre) { this->nombre = nombre; }
@@ -48,9 +50,18 @@ public:
   Carretera *getCarretera() { return carretera; }
   void setCarretera(Carretera *carretera) { this->carretera = carretera; }
 
+  //************************Métodos************************
+
+  /*
+    Pasa la informacion del lugar a string*/
   std::string toString();
+
+  /*
+    Compara Lugares segun el nombre*/
   int compareTo(Lugar otro);
 
+  /*
+    Nombre completo de la carretera*/
   std::string nombreCarretera();
 };
 #endif

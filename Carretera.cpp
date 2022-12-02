@@ -5,65 +5,28 @@
 
 // Public
 
+// Destructor
 Carretera::~Carretera()
 {
   if (this != nullptr)
   {
 
-    if (this->getLeftChild() != nullptr)
+    if (this->getHijoIzquierdo() != nullptr)
     {
-      delete this->getLeftChild();
+      delete this->getHijoIzquierdo();
     }
 
-    if (this->getRigthChild() != nullptr)
+    if (this->getHijoDerecho() != nullptr)
     {
-      delete this->getRigthChild();
+      delete this->getHijoDerecho();
     }
   }
-  // Carretera::destruirRecursivamente(this);
 }
+
+/*
+Escribe en un array la informacion de la carretera*/
 string Carretera::toString()
 {
   return "Destino: " + this->destino + ". Informacion: " + this->informacion +
          ". Coste: " + to_string(this->coste);
-}
-
-void Carretera::destruirRecursivamente(Carretera *nodo)
-{
-  Carretera *derecha;
-
-  do
-  {
-    std::cout << "    Destruida Carretera Izquierda" << std::endl;
-    derecha = nodo->getRigthChild();
-    while (nodo != nullptr)
-    {
-      Carretera *left = nodo->getLeftChild();
-      std::cout << "    Destruida Carretera derecha" << std::endl;
-      delete nodo;
-      std::cout << "    Destruida esta Carretera" << std::endl;
-      nodo = left;
-    }
-    nodo = derecha;
-  } while (nodo != nullptr);
-  /*
-      if (nodo != nullptr)
-      {
-          destruirRecursivamente(nodo->getLeftChild());
-          std::cout << "    Destruida Carretera Izquierda"<< std::endl;
-          destruirRecursivamente(nodo->getRigthChild());
-          std::cout << "    Destruida Carretera derecha"<< std::endl;
-          delete nodo;
-          std::cout << "    Destruida esta Carretera"<< std::endl;
-      }    */
-  /*
-      TreeNode* right;
-      do {
-          right = node->right;
-          while(node) {
-              TreeNode* left = node->left;
-              delete node;
-              node = left;
-          }
-      } while(node = right);*/
 }

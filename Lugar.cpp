@@ -7,12 +7,18 @@
 
 // Public
 
+//************************Métodos************************
+
+/*
+  Pasa la informacion del lugar a string*/
 string Lugar::toString()
 {
   return "Nombre: " + this->nombre + ". Informacion: " + this->informacion +
          ". Caretera: " + this->nombreCarretera();
 }
 
+/*
+  Compara Lugares segun el nombre*/
 int Lugar::compareTo(Lugar otro)
 {
   int comparador = 0;
@@ -35,6 +41,8 @@ int Lugar::compareTo(Lugar otro)
   return comparador;
 }
 
+/*
+Nombre completo de la carretera*/
 std::string Lugar::nombreCarretera()
 {
   return this->getNombre() + "-" + this->carretera->getDestino();
