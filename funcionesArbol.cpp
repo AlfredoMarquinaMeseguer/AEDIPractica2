@@ -1,6 +1,7 @@
 #include <iostream>
 #include <list>
-#include <string>
+#include <string.h>
+#include <stdio.h>
 #include <math.h>
 #include <algorithm>
 #include "Carretera.h"
@@ -271,29 +272,36 @@ Carretera *funcionesArbol::buscar(Carretera *esteNodo, std::string destino)
 */
 int funcionesArbol::comparadorCadenas(std::string primero, std::string segundo)
 {
-    int diferenciaLongitud = primero.length() - segundo.length();
+    /*int diferenciaLongitud = primero.length() - segundo.length();
     int longitudTextoCorto = (diferenciaLongitud < 0) ? primero.length() : segundo.length();
-    int devolver = 0;
+    int devolver = 0;*/
 
     /*Convertir ambas cadena a compara a minusculas para no diferciar
       entre mayusculas y minusculas*/
-    transform(primero.begin(), primero.end(), primero.begin(), ::tolower);
-    transform(segundo.begin(), segundo.end(), segundo.begin(), ::tolower);
+   /* transform(primero.begin(), primero.end(), primero.begin(), ::tolower);
+    transform(segundo.begin(), segundo.end(), segundo.begin(), ::tolower);*/
 
     // Comparamos letra a letra has que encontremos una diferente
-    for (int i = 0; i < longitudTextoCorto && devolver == 0; i++)
+    /*for (int i = 0; i < longitudTextoCorto && devolver == 0; i++)
     {
         devolver = int(tolower(primero[i])) - tolower(segundo[i]);
-    }
+    }*/
 
     /* En caso de que los caracteres comparados sean iguales es posible que uno
        sea prefijo del otro. Por lo que  comprobamos la diferencia de longitud.
        Esto tendrá los mismos efectos que la original.
     */
-    if (devolver == 0)
+    /*if (devolver == 0)
     {
         devolver = diferenciaLongitud;
-    }
+    }*/
 
-    return devolver;
+    char primero_array[primero.length()+1];
+    char segundo_array[segundo.length()+1];
+
+	strcpy(primero_array, primero.c_str());	
+	strcpy(segundo_array, segundo.c_str());
+
+    
+    return strcmp(primero_array, segundo_array);
 }
