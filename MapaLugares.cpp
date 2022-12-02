@@ -2,6 +2,7 @@
 #include "MapaLugares.h"
 #include "Lugar.h"
 #include "Carretera.h"
+#include "funcionesArbol.h"
 // Incluimos la definición (declaración) de la clase
 #include <iostream> // Incluimos iostream para usar std::cout
 #include <string>
@@ -197,12 +198,12 @@ Carretera *MapaLugares::consultarCarretera(string origen, string destino)
   return consulta;
 }
 
-Carretera *MapaLugares::listarAdyacentes(string origen)
+std::list<Carretera *> MapaLugares::listarAdyacentes(string origen)
 {
   unsigned long hashValue = funcionHash(origen);
   std::list<Lugar>::iterator finCubeta = mapa[hashValue].end();
   std::list<Lugar>::iterator posicionCubeta = mapa[hashValue].begin();
-  Carretera *consulta;
+  std::list<Carretera *> consulta;
 
   while (posicionCubeta != finCubeta && (*posicionCubeta).getNombre() != origen)
   {
@@ -214,15 +215,15 @@ Carretera *MapaLugares::listarAdyacentes(string origen)
   */
   if (posicionCubeta != finCubeta)
   {
-    consulta = (*posicionCubeta).getCarretera();
-    if (consulta == nullptr)
+    consulta = funcionesArbol::inOrden((*posicionCubeta).getCarretera());
+    if (consulta.empty())
     {
-      consulta = new Carretera("", 0, "");
+      consulta = {nullptr};
     }
   }
   else
   {
-    consulta = nullptr;
+    consulta = {};
   }
 
   return consulta;

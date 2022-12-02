@@ -1,12 +1,14 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 #include <list>
 #include <string>
 
 #include "Carretera.h"
 #include "Lugar.h"
 #include "MapaLugares.h"
+#include "funcionesArbol.h"
 
 using namespace std;
 
@@ -56,7 +58,7 @@ int main()
 	// Carretera consultada en el comando ConsultarCarretera
 	Carretera *consultada;
 
-	bool imprimir;
+	std::string imprimir;
 	bool carreteraAnnadida;
 	// Bucle se ejecuta hasta que deje de recibir texto por consola
 	while (cin >> comando)
@@ -112,20 +114,21 @@ int main()
 		{
 
 			carreteraAnnadida = lugares->annadirCarretera(paramSeparados[0], new Carretera(paramSeparados[1],
-																							(unsigned int)stoi(paramSeparados[2]),
-																							paramSeparados[3]));
+																						   (unsigned int)stoi(paramSeparados[2]),
+																						   paramSeparados[3]));
 			if (carreteraAnnadida)
 			{
+				lugarActual = lugares->consultar(paramSeparados[0]);
 				std::cout << "Añadido: " << paramSeparados[0] << "-" << paramSeparados[1] << ". Total: "
-						  << "1"
+						  << funcionesArbol::numNodos(lugarActual->getCarretera())
 						  << " carreteras" << std::endl;
 			}
 		}
 		else if (comando == "AC")
 		{
 			lugares->annadirCarretera(paramSeparados[0], new Carretera(paramSeparados[1],
-																		(unsigned int)stoi(paramSeparados[2]),
-																		""));
+																	   (unsigned int)stoi(paramSeparados[2]),
+																	   ""));
 		}
 		else if (comando == "ConsultarCarretera")
 		{
@@ -144,12 +147,24 @@ int main()
 		}
 		else if (comando == "ListarAdyacentes")
 		{
-			Carretera *consultada = lugares->listarAdyacentes(paramSeparados[0]);
+			std::list<Carretera *> consultada = lugares->listarAdyacentes(paramSeparados[0]);
 
-			if (consultada != nullptr)
+			if (!consultada.empty())
 			{
+				imprimir = "";
+				if (consultada.front() != nullptr)
+				{
+					std::list<Carretera *>::iterator itrNormal = consultada.begin();
+					while (itrNormal != consultada.end())
+					{
+						imprimir += (*itrNormal)->getDestino() + ",";
+						itrNormal++;
+					}
+					imprimir.pop_back();
+				}
+
 				std::cout << "Encontrado: " << paramSeparados[0] << std::endl
-						  << "Adyacentes: " << consultada->getDestino() << std::endl;
+						  << "Adyacentes: " << imprimir << std::endl;
 			}
 			else
 			{

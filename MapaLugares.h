@@ -31,6 +31,6 @@ class MapaLugares{
     Carretera * consultarCarretera(string origen, string destino);
 
     //Listar adyacente como lista de carreteras al implementarlo en el siguiente ejercicio 302
-    Carretera * listarAdyacentes(string origen);
+    list<Carretera *> listarAdyacentes(string origen);
 };
 #endif

@@ -16,13 +16,19 @@ private:
   string informacion;
   // Carreteras que sale del lugar
   Carretera * carretera;
-  // 
+  // Numero Carreteras ;
+  int numeroCarreteras;
 public:
   Lugar(){this->nombre = ""; this->informacion = "";};
-  Lugar(string &nombre){this->nombre = nombre; this->informacion = "";};
+  Lugar(string &nombre){
+    this->nombre = nombre;
+    this->informacion = "";
+    this->numeroCarreteras = 0;};
   Lugar(string &nombre, string &informacion) :
-   nombre(nombre), informacion(informacion){    
+   nombre(nombre), informacion(informacion), numeroCarreteras(0){    
   } 
+  ~Lugar(){
+    Carretera::destruirRecursivamente(carretera);};
   
   // nombre
   std::string getNombre(){ return nombre; }
@@ -35,6 +41,10 @@ public:
   // carretera
   Carretera * getCarretera() { return carretera; }
   void setCarretera(Carretera * carretera){ this->carretera = carretera;}
+
+  // numeroCarreteras
+  int getNumeroCarreteras() { return numeroCarreteras; }
+  void setNumeroCarreteras(int numeroCarreteras){ this->numeroCarreteras = numeroCarreteras;}
   
   std::string toString();
   int compareTo(Lugar otro);

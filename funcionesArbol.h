@@ -18,17 +18,16 @@ public:
     static Carretera *balancear(Carretera *t);
     static Carretera *insertar(Carretera *esteNodo, std::string destino,
                                unsigned int coste, std::string informacion);
-    static int compareTo(Carretera *Z);
+    static Carretera *buscar(Carretera *esteNodo, std::string destino);
 
     static int altura(Carretera *arbol);
+    static int numNodos(Carretera *arbol);
     static int diferencia(Carretera *arbol);
 
     static void show(Carretera *, int);
     static void inorder(Carretera *);
     // Cuando sena carretera esta funcion devuelve strings de nombre carretera
-    static std::list<Carretera *> postOrden(Carretera *t);
-    static void preorder(Carretera *);
-    static void postorder(Carretera *);
+    static std::list<Carretera *> inOrden(Carretera *t);
 
     static int comparadorCadenas(std::string primero, std::string segundo);
 };
