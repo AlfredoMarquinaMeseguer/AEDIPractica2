@@ -30,6 +30,7 @@ class MapaLugares{
     void vaciar(void);
 
     bool annadirCarretera(string origen, string destino, unsigned int coste,string informacion);
+    bool annadirCarretera(string origen, Carretera * carreteraAnnadir);
     Carretera * consultarCarretera(string origen, string destino);
 
     //Listar adyacente como lista de carreteras al implementarlo en el siguiente ejercicio 302

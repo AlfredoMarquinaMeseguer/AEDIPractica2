@@ -22,14 +22,14 @@ unsigned long MapaLugares::funcionHash(string clave)
   unsigned long hash = 0;
   int c;
 
-  while (c = *borrarDespues++)
+  while ((c = *borrarDespues++))
     hash = c + (hash << 6) + (hash << 16) - hash;
 
   return (hash % this->capacidad);
 }
 
 void MapaLugares::reestructuracion()
-{
+{  
   unsigned long hash;
   unsigned long antiguaCapacidad = this->capacidad;
   list<Lugar> *antiguoMapa = this->mapa;
@@ -113,6 +113,7 @@ Lugar *MapaLugares::consultar(string nombre)
   }
 
   // No ha llegado al final de la lista, es porque se ha encontrado el objeto
+  // Si no lo encuentra devuele nulo
   return (posicionCubeta != finCubeta) ? &(*posicionCubeta) : nullptr;
 }
 
@@ -136,12 +137,26 @@ void MapaLugares::eliminar(string nombre)
 
 void MapaLugares::vaciar(void)
 {
+  std::list<Lugar>::iterator posicionCubeta;
   // Vaciar mapa cubeta a cubeta
   for (int i = 0; i < this->capacidad; ++i)
-  {
+  { /*
+     std::cout << "En bucle " << i << " de vaciar" << std::endl;
+     posicionCubeta = mapa[i].begin();
+     std::cout << "  Antes bucle iterador." << std::endl;
+     while (posicionCubeta != mapa[i].end())
+     {
+       std::cout << "    En bucle iterador. Lugar: "<< (*posicionCubeta).getNombre() << std::endl;
+       //delete (*posicionCubeta).getCarretera();
+       Carretera::destruirRecursivamente((*posicionCubeta).getCarretera());
+       std::cout << "    Carretera eliminada " << std::endl;
+       posicionCubeta++;
+     }
+     std::cout << "  Despues bucle iterador." << std::endl;*/
     this->mapa[i].clear();
   }
-  // Resetear numeroLugares
+  // std::cout << "Fin bucle." << std::endl;
+  //  Resetear numeroLugares
   this->numeroLugares = 0;
   this->numeroCarreteras = 0;
 }
@@ -153,28 +168,35 @@ bool MapaLugares::annadirCarretera(string origen, string destino, unsigned int c
   unsigned long hashValue = funcionHash(origen);
   std::list<Lugar>::iterator posicionCubeta = mapa[hashValue].begin();
 
-  while (posicionCubeta != mapa[hashValue].end() && (*posicionCubeta).getNombre() != origen)
+  // std::cout << "Inicio: Bucle"<< std::endl;
+  while (posicionCubeta != mapa[hashValue].end() &&
+         (*posicionCubeta).getNombre() != origen)
   {
     posicionCubeta++;
   }
+  // std::cout << "Fin: Bucle"<< std::endl;
 
   // No ha llegado al final de la lista, es porque se ha encontrado el objeto
-  if (posicionCubeta != mapa[hashValue].end())
+  if (posicionCubeta != mapa[hashValue].end() && origen != destino &&  consultar(destino) != nullptr)
   {
-    // Se mide el numero de nodos antes de insertar
+    // std::cout <<"Dentro if: " <<  posicionCubeta->getCarretera() << std::endl;
+    //  Se mide el numero de nodos antes de insertar
     numNodosAntesInserccion = funcionesArbol::numNodos(posicionCubeta->getCarretera());
     // Se inserta el nodo en el arbol
+    // std::cout << "  Numero de nodos antes de insertar: " << numNodosAntesInserccion << std::endl;
     posicionCubeta->setCarretera(funcionesArbol::insertar(posicionCubeta->getCarretera(),
                                                           destino, coste, informacion));
-    // Se mide el numero de nodos despues de insertar
+    // std::cout << "  Carretera setteada " << std::endl;
+    //  Se mide el numero de nodos despues de insertar
     numNodosDespuesInserccion = funcionesArbol::numNodos(posicionCubeta->getCarretera());
+    // std::cout << "Nuumeros de nodos: "<< std::endl;
 
-    //std::cout << "Numero de nodos antes de insertar: " << numNodosAntesInserccion << std::endl; 
-    //std::cout << "Numero de nodos despues de insertar: " << numNodosDespuesInserccion << std::endl; 
-    // Si el numero de antes es menor al posterior, es porque se ha añadido el nodo
+    // std::cout << "  Numero de nodos despues de insertar: " << numNodosDespuesInserccion << std::endl;
+    //  Si el numero de antes es menor al posterior, es porque se ha añadido el nodo
     if (numNodosAntesInserccion < numNodosDespuesInserccion)
     {
       this->numeroCarreteras++;
+      // std::cout << "    Nuevo numero carreteras: " << this->numeroCarreteras<< std::endl;
     }
     devolver = true;
   }
@@ -219,6 +241,7 @@ Carretera *MapaLugares::consultarCarretera(string origen, string destino)
   }
   else
   {
+    // Si no se encuentra devuelve un puntero nulo
     consulta = nullptr;
   }
 

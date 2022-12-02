@@ -61,6 +61,7 @@ int main()
 	std::string imprimir;
 	bool carreteraAnnadida;
 	// Bucle se ejecuta hasta que deje de recibir texto por consola
+
 	while (cin >> comando)
 	{
 
@@ -114,8 +115,8 @@ int main()
 		{
 
 			carreteraAnnadida = lugares->annadirCarretera(paramSeparados[0], paramSeparados[1],
-																						   (unsigned int)stoi(paramSeparados[2]),
-																						   paramSeparados[3]);
+														  (unsigned int)stoi(paramSeparados[2]),
+														  paramSeparados[3]);
 			if (carreteraAnnadida)
 			{
 				std::cout << "Añadido: " << paramSeparados[0] << "-" << paramSeparados[1] << ". Total: "
@@ -125,8 +126,8 @@ int main()
 		else if (comando == "AC")
 		{
 			lugares->annadirCarretera(paramSeparados[0], paramSeparados[1],
-																	   (unsigned int)stoi(paramSeparados[2]),
-																	   "");
+									  (unsigned int)stoi(paramSeparados[2]),
+									  "");
 		}
 		else if (comando == "ConsultarCarretera")
 		{

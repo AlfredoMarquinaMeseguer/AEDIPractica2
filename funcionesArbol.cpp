@@ -23,11 +23,25 @@ int funcionesArbol::altura(Carretera *arbol)
 
 int funcionesArbol::numNodos(Carretera *arbol)
 {
+    //std::cout <<" NumNodos: " << std::endl;
     int numeroDeNodos = 0;
     if (arbol != nullptr)
-    {
-        numeroDeNodos = 1 + numNodos(arbol->getLeftChild()) + numNodos(arbol->getRigthChild());
+    {   
+        //std::cout <<" Dentro if" << std::endl;     
+        numeroDeNodos = 1 ;
+        //std::cout <<" Asignado" << std::endl;    
+        if (arbol->getLeftChild() != nullptr){
+            //std::cout <<" If hijo izquierdo" << std::endl;    
+            numeroDeNodos += numNodos(arbol->getLeftChild());
+        }
+      //   std::cout <<" Asignado 12" << std::endl;
+        if (arbol->getRigthChild() != nullptr){
+            //std::cout <<" If hijo derecho" << std::endl;    
+            numeroDeNodos += numNodos(arbol->getRigthChild());
+        }
+        //std::cout <<" Puntero  no nulo: "<< numeroDeNodos << std::endl;
     }
+    //std::cout <<" Devolviendo: " << std::endl;
     return numeroDeNodos;
 }
 
@@ -227,7 +241,7 @@ Carretera *funcionesArbol::buscar(Carretera *esteNodo, std::string destino)
     int diferencia;
     if (esteNodo != nullptr) // Si el nodo es nulo entonces
     {
-        diferencia = funcionesArbol::comparadorCadenas(esteNodo->getDestino(), destino);
+        diferencia = funcionesArbol::comparadorCadenas(destino, esteNodo->getDestino());
         if (diferencia == 0) // Valor igual es el consultado
         {
             devolver = esteNodo;
