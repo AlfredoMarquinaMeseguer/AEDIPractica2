@@ -68,6 +68,6 @@ public:
     Carretera *getRigthChild() { return rigth_child; }
     void setRigthChild(Carretera *rigth_child) { this->rigth_child = rigth_child; }
 
-    static void destruirRecursivamente(Carretera *Carretera);
+    void static destruirRecursivamente(Carretera *Carretera);
 };
 #endif

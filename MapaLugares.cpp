@@ -1,7 +1,7 @@
 // Archivo fuente de implementación de la clase Persona
+#include "Carretera.h"
 #include "MapaLugares.h"
 #include "Lugar.h"
-#include "Carretera.h"
 #include "funcionesArbol.h"
 // Incluimos la definición (declaración) de la clase
 #include <iostream> // Incluimos iostream para usar std::cout
