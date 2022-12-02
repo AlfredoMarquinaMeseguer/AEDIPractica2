@@ -65,6 +65,7 @@ MapaLugares::MapaLugares()
   this->capacidad = 1000;
   this->mapa = new list<Lugar>[this->capacidad];
   this->numeroLugares = 0;
+  this->numeroCarreteras = 0;
 }
 
 MapaLugares::~MapaLugares()
@@ -142,11 +143,13 @@ void MapaLugares::vaciar(void)
   }
   // Resetear numeroLugares
   this->numeroLugares = 0;
+  this->numeroCarreteras = 0;
 }
 
-bool MapaLugares::annadirCarretera(string origen, Carretera *carretera)
+bool MapaLugares::annadirCarretera(string origen, string destino, unsigned int coste, string informacion)
 {
   bool devolver = false;
+  int numNodosAntesInserccion, numNodosDespuesInserccion;
   unsigned long hashValue = funcionHash(origen);
   std::list<Lugar>::iterator posicionCubeta = mapa[hashValue].begin();
 
@@ -156,9 +159,23 @@ bool MapaLugares::annadirCarretera(string origen, Carretera *carretera)
   }
 
   // No ha llegado al final de la lista, es porque se ha encontrado el objeto
-  if (posicionCubeta != mapa[hashValue].end() && this->consultar(carretera->getDestino()) != nullptr)
+  if (posicionCubeta != mapa[hashValue].end())
   {
-    (*posicionCubeta).setCarretera(carretera);
+    // Se mide el numero de nodos antes de insertar
+    numNodosAntesInserccion = funcionesArbol::numNodos(posicionCubeta->getCarretera());
+    // Se inserta el nodo en el arbol
+    posicionCubeta->setCarretera(funcionesArbol::insertar(posicionCubeta->getCarretera(),
+                                                          destino, coste, informacion));
+    // Se mide el numero de nodos despues de insertar
+    numNodosDespuesInserccion = funcionesArbol::numNodos(posicionCubeta->getCarretera());
+
+    //std::cout << "Numero de nodos antes de insertar: " << numNodosAntesInserccion << std::endl; 
+    //std::cout << "Numero de nodos despues de insertar: " << numNodosDespuesInserccion << std::endl; 
+    // Si el numero de antes es menor al posterior, es porque se ha añadido el nodo
+    if (numNodosAntesInserccion < numNodosDespuesInserccion)
+    {
+      this->numeroCarreteras++;
+    }
     devolver = true;
   }
 
@@ -177,18 +194,28 @@ Carretera *MapaLugares::consultarCarretera(string origen, string destino)
     posicionCubeta++;
   }
 
-  
   /*
    1. Si no se llega al final de la cubeta es porque ha encontrado el objeto.
    2. El puntero carretera no es nulo
    3. El destino de la carretera y el pasado por parametro son iguales
   */
- 
+  // (*posicionCubeta).getCarretera()->getDestino() == destino
   if (posicionCubeta != mapa[hashValue].end() &&
-      (*posicionCubeta).getCarretera()  != nullptr &&
-      (*posicionCubeta).getCarretera()->getDestino() == destino)
+      (*posicionCubeta).getCarretera() != nullptr)
   {
-    consulta = (*posicionCubeta).getCarretera();
+    int diferencia = funcionesArbol::comparadorCadenas(destino, (*posicionCubeta).getCarretera()->getDestino());
+    if (diferencia == 0)
+    {
+      consulta = (*posicionCubeta).getCarretera();
+    }
+    else if (diferencia < 0)
+    {
+      consulta = funcionesArbol::buscar(posicionCubeta->getCarretera()->getLeftChild(), destino);
+    }
+    else
+    {
+      consulta = funcionesArbol::buscar(posicionCubeta->getCarretera()->getRigthChild(), destino);
+    }
   }
   else
   {

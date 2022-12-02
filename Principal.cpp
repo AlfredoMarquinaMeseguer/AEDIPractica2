@@ -113,22 +113,20 @@ int main()
 		else if (comando == "AñadirCarretera")
 		{
 
-			carreteraAnnadida = lugares->annadirCarretera(paramSeparados[0], new Carretera(paramSeparados[1],
+			carreteraAnnadida = lugares->annadirCarretera(paramSeparados[0], paramSeparados[1],
 																						   (unsigned int)stoi(paramSeparados[2]),
-																						   paramSeparados[3]));
+																						   paramSeparados[3]);
 			if (carreteraAnnadida)
 			{
-				lugarActual = lugares->consultar(paramSeparados[0]);
 				std::cout << "Añadido: " << paramSeparados[0] << "-" << paramSeparados[1] << ". Total: "
-						  << funcionesArbol::numNodos(lugarActual->getCarretera())
-						  << " carreteras" << std::endl;
+						  << lugares->getNumeroCarreteras() << " carreteras" << std::endl;
 			}
 		}
 		else if (comando == "AC")
 		{
-			lugares->annadirCarretera(paramSeparados[0], new Carretera(paramSeparados[1],
+			lugares->annadirCarretera(paramSeparados[0], paramSeparados[1],
 																	   (unsigned int)stoi(paramSeparados[2]),
-																	   ""));
+																	   "");
 		}
 		else if (comando == "ConsultarCarretera")
 		{
@@ -157,9 +155,10 @@ int main()
 					std::list<Carretera *>::iterator itrNormal = consultada.begin();
 					while (itrNormal != consultada.end())
 					{
-						imprimir += (*itrNormal)->getDestino() + ",";
+						imprimir += (*itrNormal)->getDestino() + ", ";
 						itrNormal++;
 					}
+					imprimir.pop_back();
 					imprimir.pop_back();
 				}
 

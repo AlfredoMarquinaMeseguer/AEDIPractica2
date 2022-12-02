@@ -21,10 +21,12 @@ int funcionesArbol::altura(Carretera *arbol)
     return altura;
 }
 
-int funcionesArbol::numNodos(Carretera *arbol){
+int funcionesArbol::numNodos(Carretera *arbol)
+{
     int numeroDeNodos = 0;
-    if (arbol != nullptr){
-        numeroDeNodos = 1+numNodos(arbol->getLeftChild())+numNodos(arbol->getRigthChild());
+    if (arbol != nullptr)
+    {
+        numeroDeNodos = 1 + numNodos(arbol->getLeftChild()) + numNodos(arbol->getRigthChild());
     }
     return numeroDeNodos;
 }
@@ -94,8 +96,9 @@ Carretera *funcionesArbol::insertar(Carretera *esteNodo, std::string destino, un
                                     std::string informacion)
 {
     int diferencia;
-    if (esteNodo == NULL)
+    if (esteNodo == nullptr)
     {
+        //std::cout << "Crear Nodo" << destino << std::endl;
         esteNodo = new Carretera(destino, coste, informacion);
         /*
         r->d = v;
@@ -104,11 +107,20 @@ Carretera *funcionesArbol::insertar(Carretera *esteNodo, std::string destino, un
     }
     else
     {
-        diferencia = funcionesArbol::comparadorCadenas(esteNodo->getDestino(), destino);
+        diferencia = funcionesArbol::comparadorCadenas(destino, esteNodo->getDestino());
         if (diferencia < 0) // Valores menores a la izquierda
         {
-            esteNodo->setLeftChild(insertar(esteNodo->getLeftChild(), destino,
-                                            coste, informacion));
+            //std::cout << "Insertar en izquierda " << destino << std::endl;
+            if (esteNodo->getLeftChild() == nullptr)
+            {
+                esteNodo->setLeftChild(new Carretera(destino, coste, informacion)); /* code */
+            }
+            else
+            {
+                esteNodo->setLeftChild(insertar(esteNodo->getLeftChild(), destino,
+                                                coste, informacion));
+            }
+
             /*
             if (esteNodo->getLeftChild() != nullptr){
                 esteNodo->setLeftChild(insertar(esteNodo->getLeftChild(), valor));
@@ -120,8 +132,17 @@ Carretera *funcionesArbol::insertar(Carretera *esteNodo, std::string destino, un
         }
         else if (diferencia > 0) // Valores mayores a la derecha
         {
-            esteNodo->setRigthChild(insertar(esteNodo->getRigthChild(), destino,
-                                             coste, informacion));
+            //std::cout << "Insertar en derecha " << destino << std::endl;
+
+             if (esteNodo->getRigthChild() == nullptr)
+            {
+                esteNodo->setRigthChild(new Carretera(destino, coste, informacion)); /* code */
+            }
+            else
+            {
+                esteNodo->setRigthChild(insertar(esteNodo->getRigthChild(), destino,
+                                                coste, informacion));
+            }
             /*
             if (esteNodo->getRigthChild() != nullptr)
 
@@ -134,7 +155,7 @@ Carretera *funcionesArbol::insertar(Carretera *esteNodo, std::string destino, un
 
         else
         {
-            
+            //std::cout << "Actualizar" << destino << std::endl;
             esteNodo->setInformacion(informacion);
             esteNodo->setCoste(coste);
         }
@@ -142,7 +163,6 @@ Carretera *funcionesArbol::insertar(Carretera *esteNodo, std::string destino, un
 
     return esteNodo;
 }
-
 
 void funcionesArbol::show(Carretera *imprimir, int valorAImprimir)
 {
@@ -205,7 +225,7 @@ Carretera *funcionesArbol::buscar(Carretera *esteNodo, std::string destino)
 {
     Carretera *devolver;
     int diferencia;
-    if (esteNodo != nullptr)//Si el nodo es nulo entonces 
+    if (esteNodo != nullptr) // Si el nodo es nulo entonces
     {
         diferencia = funcionesArbol::comparadorCadenas(esteNodo->getDestino(), destino);
         if (diferencia == 0) // Valor igual es el consultado
